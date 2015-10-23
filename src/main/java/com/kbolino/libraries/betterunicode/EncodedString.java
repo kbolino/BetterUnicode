@@ -4,39 +4,38 @@ import java.nio.ByteBuffer;
 
 public final class EncodedString {
 	private final UnicodeEncoding encoding;
-	private final ByteBuffer buffer;
+	private final byte[] bytes;
 	
-	EncodedString(UnicodeEncoding encoding, ByteBuffer buffer) {
+	public EncodedString(UnicodeEncoding encoding, byte[] bytes) {
+		super();
 		assert encoding != null;
-		assert buffer != null;
-		assert buffer.hasArray();
-		assert buffer.limit() == buffer.capacity();
+		assert bytes != null;
+		
 		this.encoding = encoding;
-		this.buffer = buffer;
+		this.bytes = bytes;
 	}
 	
-	public UnicodeEncoding encoding() {
+	public UnicodeEncoding getEncoding() {
 		return encoding;
 	}
 	
 	public int sizeInBytes() {
-		return buffer.capacity();
+		return bytes.length;
 	}
 	
 	public byte[] toByteArray() {
-		byte[] copy = new byte[buffer.capacity()];
-		System.arraycopy(buffer.array(), 0, copy, 0, buffer.capacity());
+		byte[] copy = new byte[bytes.length];
+		System.arraycopy(bytes, 0, copy, 0, bytes.length);
 		return copy;
 	}
 	
-	public int putBytes(ByteBuffer target) {
-		buffer.rewind();
-		target.put(buffer);
-		return buffer.capacity();
+	public int copyBytes(byte[] target, int offset) {
+		System.arraycopy(bytes, 0, target, offset, bytes.length);
+		return bytes.length;
 	}
 	
-	public ByteBuffer toReadOnlyBuffer() {
-		buffer.rewind();
-		return buffer.asReadOnlyBuffer();
+	public int copyBytes(ByteBuffer target) {
+		target.put(bytes);
+		return bytes.length;
 	}
 }

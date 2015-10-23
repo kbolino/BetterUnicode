@@ -2,30 +2,30 @@ package com.kbolino.libraries.betterunicode;
 
 import java.util.NoSuchElementException;
 
-enum EmptyUnicodeString implements UnicodeString {
+public enum EmptyUnicodeString implements UnicodeString {
 	INSTANCE;
 	
 	private static enum EmptyCodePointIterator implements CodePointIterator {
 		INSTANCE;
 
-		// @Override
+		@Override
 		public boolean hasNext() {
 			return false;
 		}
 
-		// @Override
+		@Override
 		public int next() throws NoSuchElementException {
 			throw new NoSuchElementException();
 		}
 		
 	}
 	
-	// @Override
+	@Override
 	public CodePointIterator iterator() {
 		return EmptyCodePointIterator.INSTANCE;
 	}
 
-	// @Override
+	@Override
 	public int length() {
 		return 0;
 	}

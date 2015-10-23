@@ -2,7 +2,7 @@ package com.kbolino.libraries.betterunicode;
 
 public abstract class AbstractUnicodeString implements UnicodeString {
 
-	// @Override
+	@Override
 	public int length() {
 		int length;
 		CodePointIterator iterator = iterator();

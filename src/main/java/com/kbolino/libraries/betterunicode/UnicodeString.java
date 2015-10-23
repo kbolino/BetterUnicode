@@ -11,12 +11,12 @@ public interface UnicodeString {
 	 * @return  An {@link CodePointIterator} over the content of this
 	 *   string.
 	 */
-	CodePointIterator iterator();
+	public CodePointIterator iterator();
 	/**
 	 * The length of this string.
 	 * @return  The number of times {@link CodePointIterator#next() next()}
 	 *   may be safely invoked on a fresh {@link #iterator() iterator} of
 	 *   this string.
 	 */
-	int length();
+	public int length();
 }

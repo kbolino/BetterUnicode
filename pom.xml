@@ -7,7 +7,7 @@
 	<name>BetterUnicode</name>
 	<description>A library providing proper Unicode support</description>
 	<properties>
-		<java.version>1.5</java.version>
+		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>

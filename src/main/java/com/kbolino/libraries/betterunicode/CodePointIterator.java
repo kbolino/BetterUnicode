@@ -17,12 +17,12 @@ public interface CodePointIterator {
 	 * @return  True if and only if a single subsequent call to
 	 *   {@link #next()} will succeed.
 	 */
-	boolean hasNext();
+	public boolean hasNext();
 	/**
 	 * Returns the next code point.
 	 * @return  The next available Unicode code point, if any.
 	 * @throws NoSuchElementException  If there are no more code points
 	 *   available.
 	 */
-	int next() throws NoSuchElementException;
+	public int next() throws NoSuchElementException;
 }

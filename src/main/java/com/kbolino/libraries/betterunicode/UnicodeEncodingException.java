@@ -7,16 +7,16 @@ public class UnicodeEncodingException extends RuntimeException {
 		super();
 	}
 
-	public UnicodeEncodingException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
+	public UnicodeEncodingException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
-	public UnicodeEncodingException(String arg0) {
-		super(arg0);
+	public UnicodeEncodingException(String message) {
+		super(message);
 	}
 
-	public UnicodeEncodingException(Throwable arg0) {
-		super(arg0);
+	public UnicodeEncodingException(Throwable cause) {
+		super(cause);
 	}
 	
 }

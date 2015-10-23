@@ -4,10 +4,29 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.NoSuchElementException;
 
-public final class Utf16String extends AbstractUnicodeString implements UnicodeString {
+public final class Utf16String extends AbstractUnicodeString
+		implements UnicodeString {
 	private static final char BYTE_ORDER_MARK = 0xfeff;
 	
-	static Utf16String copyOf(UnicodeString string) {
+	public static Utf16String copyOf(UnicodeString string) {
+		StringBuilder sb = new StringBuilder(2 * string.length());
+		CodePointIterator iterator = string.iterator();
+		while (iterator.hasNext()) {
+			sb.appendCodePoint(iterator.next());
+		}
+		return wrap(sb.toString());
+	}
+	
+	public static Utf16String wrap(String string) {
+		int length = string.codePointCount(0, string.length());
+		return new Utf16String(string, length);
+	}
+	
+	public static Utf16String decode(byte[] bytes) {
+		return decode(bytes, 0, bytes.length);
+	}
+	
+	public static Utf16String decode(byte[] bytes, int offset, int length) {
 		// TODO
 		return null;
 	}
@@ -15,20 +34,22 @@ public final class Utf16String extends AbstractUnicodeString implements UnicodeS
 	private final String wrapped;
 	private final int length;
 	
-	Utf16String(String wrapped) {
+	private Utf16String(String wrapped, int length) {
+		super();
 		assert wrapped != null;
+		assert length > 0;
 		this.wrapped = wrapped;
-		this.length = wrapped.codePointCount(0, wrapped.length());
+		this.length = length;
 	}
 	
-	private final class Utf16CodePointIterator implements CodePointIterator {
+	private final class Iterator implements CodePointIterator {
 		private int index = 0;
-		// @Override
+		@Override
 		public boolean hasNext() {
 			return index < wrapped.length();
 		}
 
-		// @Override
+		@Override
 		public int next() throws NoSuchElementException {
 			if (index < wrapped.length()) {
 				int codePoint = wrapped.codePointAt(index);
@@ -41,12 +62,12 @@ public final class Utf16String extends AbstractUnicodeString implements UnicodeS
 		
 	}
 
-	// @Override
+	@Override
 	public CodePointIterator iterator() {
-		return new Utf16CodePointIterator();
+		return new Iterator();
 	}
 
-	// @Override
+	@Override
 	public int length() {
 		return length;
 	}
@@ -65,14 +86,28 @@ public final class Utf16String extends AbstractUnicodeString implements UnicodeS
 		}
 	}
 	
-	public EncodedString toEncodedString(ByteOrder byteOrder) {
+	public EncodedString encodeWithBom() {
+		return encode(true, ByteOrder.BIG_ENDIAN);
+	}
+	
+	public EncodedString encodeLittleEndian() {
+		return encode(false, ByteOrder.LITTLE_ENDIAN);
+	}
+	
+	public EncodedString encodeBigEndian() {
+		return encode(false, ByteOrder.BIG_ENDIAN);
+	}
+	
+	private EncodedString encode(boolean includeBom, ByteOrder byteOrder) {
+		assert byteOrder != null;
 		UnicodeEncoding encoding = UnicodeEncoding.UTF_16;
 		int sizeInBytes = 2 * wrapped.length() + (byteOrder == null ? 2 : 0);
-		ByteBuffer buffer = ByteBuffer.allocate(sizeInBytes);
-		if (byteOrder == null) {
+		byte[] bytes = new byte[sizeInBytes];
+		ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		buffer.order(byteOrder);
+		if (includeBom) {
 			buffer.putChar(BYTE_ORDER_MARK);
 		} else {
-			buffer.order(byteOrder);
 			if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
 				encoding = UnicodeEncoding.UTF_16LE;
 			} else {
@@ -82,8 +117,7 @@ public final class Utf16String extends AbstractUnicodeString implements UnicodeS
 		for (int i = 0; i < wrapped.length(); i++) {
 			buffer.putChar(wrapped.charAt(i));
 		}
-		buffer.rewind();
-		return new EncodedString(encoding, buffer);
+		return new EncodedString(encoding, bytes);
 	}
 	
 }
